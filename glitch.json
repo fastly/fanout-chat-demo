@@ -1,3 +1,4 @@
 {
-  "install": "pip3 install --user -r requirements.txt"
+  "install": "pip3 install --user -r requirements.txt",
+  "start": "python3 manage.py runserver 3000"
 }

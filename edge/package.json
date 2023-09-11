@@ -1,0 +1,18 @@
+{
+  "name": "fanout-leaderboard-demo-edge",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "author": "oss@fastly.com",
+  "license": "MIT",
+  "engines": {
+    "node": "^18.0.0"
+  },
+  "dependencies": {
+    "@fastly/js-compute": "^3.3.3"
+  },
+  "scripts": {
+    "build": "js-compute-runtime ./src/index.js ./bin/main.wasm",
+    "deploy": "fastly compute publish"
+  }
+}

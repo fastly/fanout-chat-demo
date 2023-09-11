@@ -1,0 +1,11 @@
+# This file describes a Fastly Compute@Edge package. To learn more visit:
+# https://developer.fastly.com/reference/fastly-toml/
+
+authors = ["oss@fastly.com"]
+description = "Leaderboard Demo Edge Code"
+language = "javascript"
+manifest_version = 3
+name = "leaderboard-demo-edge"
+
+[scripts]
+  build = "npm run build"

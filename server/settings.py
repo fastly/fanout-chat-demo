@@ -143,3 +143,5 @@ ASGI_APPLICATION = 'server.asgi.application'
 GRIP_URL = os.environ.get('GRIP_URL')
 
 EVENTSTREAM_STORAGE_CLASS = 'django_eventstream.storage.DjangoModelStorage'
+
+CSP = os.environ.get('CSP')

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import json
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.db import IntegrityError, transaction
 from django.shortcuts import render, redirect
@@ -33,12 +34,15 @@ def home(request, room_id=None):
         context['last_id'] = last_id
         context['messages'] = msgs
         context['user'] = user
-        return render(request, 'chat/chat.html', context)
+        res = render(request, 'chat/chat.html', context)
     else:
         context = {}
         context['room_id'] = room_id or 'default'
-        return render(request, 'chat/join.html', context)
-
+        res = render(request, 'chat/join.html', context)
+    csp = settings.CSP if settings.CSP is not None else ''
+    if csp != '':
+        res['Content-Security-Policy'] = csp
+    return res
 
 def messages(request, room_id):
     if request.method == 'GET':

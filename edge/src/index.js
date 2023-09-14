@@ -5,6 +5,10 @@
 
 /// <reference types="@fastly/js-compute" />
 import { createFanoutHandoff } from 'fastly:fanout';
+import { includeBytes } from 'fastly:experimental';
+
+const demoManifest = includeBytes('/resources/demo-manifest.txt');
+const screenshot = includeBytes('/resources/screenshot.png');
 
 addEventListener('fetch', (event) => event.respondWith(handleRequest(event)));
 
@@ -13,6 +17,26 @@ addEventListener('fetch', (event) => event.respondWith(handleRequest(event)));
  */
 async function handleRequest(event) {
   if (event.request.method === 'GET') {
+    const { pathname } = new URL(event.request.url);
+
+    if (pathname === '/.well-known/fastly/demo-manifest') {
+      return new Response(demoManifest, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+        },
+      });
+    }
+
+    if (pathname === '/images/screenshot.png') {
+      return new Response(screenshot, {
+        status: 200,
+        headers: {
+          'Content-Type': 'image/png',
+        },
+      });
+    }
+
     // If it's a GET request, then we will pass it through Fanout
 
     // The createFanoutHandoff() creates a Response instance

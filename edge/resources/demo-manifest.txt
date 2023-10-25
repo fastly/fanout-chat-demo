@@ -13,6 +13,7 @@ views:
     href: /
     height: 550
 repo: https://github.com/fastly/fanout-chat-demo
+editUrl: https://github.com/fastly/fanout-chat-demo/blob/main/edge/resources/demo-manifest.txt
 ---
 
 ## Chat Demo for Fastly Fanout
@@ -39,7 +40,7 @@ Implementing Server-Sent Events support for an application has typically meant t
 maintain all of these connections.
 
 With Fastly Fanout and [GRIP (Generic Realtime Intermediary Protocol)](https://pushpin.org/docs/protocols/grip/),
-Compute@Edge holds all of these long-lived connections for you at the edge, so that your origin can focus on business logic.
+Fastly Compute holds all of these long-lived connections for you at the edge, so that your origin can focus on business logic.
 
 The `/rooms/{room-id}/events/` endpoint uses [django-eventstream](https://pypi.org/project/django-eventstream/) to
 use GRIP to serve updated data to clients.
@@ -49,9 +50,9 @@ Be sure to check out [the source code on GitHub](https://github.com/fastly/fanou
 ## Fastly Fanout at the Edge
 
 This streaming example illustrates one of the ways Fastly Fanout can be used. With Fastly Fanout, it's easy to add long-polling,
-SSE, and WebSocket support to your service, because Compute@Edge holds these long-lived connections for you at the edge, letting
+SSE, and WebSocket support to your service, because Compute holds these long-lived connections for you at the edge, letting
 your origin do what it does best: the business logic.
 
-When your Compute@Edge service receives a long-polling, SSE, or WebSocket connection, your origin can have Fastly Fanout
+When your Fastly Compute service receives a long-polling, SSE, or WebSocket connection, your origin can have Fastly Fanout
 hold the connection and subscribe that connection to named channels. Then, at any later time, your origin (or any application
 that you authorize) can "publish" data, by channel, using an HTTP API endpoint.

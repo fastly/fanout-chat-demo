@@ -7,7 +7,7 @@ incoming requests at the Edge.
 
 ## Usage
 
-Deploy this to your Fastly Compute@Edge service and set it up with a backend that runs the [main application](../).
+Deploy this to your Fastly Compute service and set it up with a backend that runs the [main application](../).
 
 This backend needs to be set up on your service as an entry in the **Hosts** section,
 and given the name `origin`.

@@ -19,7 +19,7 @@ The project comprises two main parts:
   small database. The frontend for this web application is a standard HTML application that uses
   [jQuery](https://jquery.com/). The files that compose the frontend are served by the backend as static files.
 
-* An edge application. A [Fastly Compute@Edge](https://docs.fastly.com/products/compute-at-edge)
+* An edge application. A [Fastly Compute](https://docs.fastly.com/products/compute-at-edge)
   application that passes traffic through to the web application, and activates the
   [Fanout feature](https://docs.fastly.com/products/fanout) for relevant requests.
 
@@ -74,7 +74,7 @@ Now, browse to your application at http://localhost:7999/.
 
 ### Production
 
-To run in production, you will need a [Fastly Compute@Edge service with Fanout enabled](https://developer.fastly.com/learning/concepts/real-time-messaging/fanout/#enable-fanout).
+To run in production, you will need a [Fastly Compute service with Fanout enabled](https://developer.fastly.com/learning/concepts/real-time-messaging/fanout/#enable-fanout).
 
 You will also need to run the server application on an origin server that is visible from the internet.
 

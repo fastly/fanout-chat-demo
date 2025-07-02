@@ -31,7 +31,12 @@ Please set the environment variable DJANGO_SECRET_KEY and restart.")
 # SECURITY WARNING: These settings should not be left on in production!
 #     We should warn the user if they're present, just as a reminder.
 DEBUG = True
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+  '.glitch.me',
+  '.fastly.com',
+  '.edgecompute.app',
+]
+
 if DEBUG or ALLOWED_HOSTS == ['*']:
     logging.warning("You are running with insecure default settings! \
 Check server/settings.py - change DEBUG to False and \
@@ -63,10 +68,12 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # Because we want to run this in an iframe on DevHub, we'll disable CSRF
+    # Please don't do this in a real app
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'server.urls'

@@ -57,6 +57,7 @@ Preparation:
 3. Setup virtualenv, install Python dependencies, create empty environment config, and set up the database.
 
     ```sh
+    cd origin
     virtualenv --python=python3 venv
     . venv/bin/activate
     pip install -r requirements.txt

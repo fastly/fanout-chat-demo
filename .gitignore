@@ -2,6 +2,6 @@
 .node-gyp
 node_modules
 
-db.sqlite3
-venv
-.env
+origin/db.sqlite3
+origin/venv
+origin/.env

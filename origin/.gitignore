@@ -1,0 +1,5 @@
+staticfiles/
+venv/
+.env
+db.sqlite3
+secrets.json

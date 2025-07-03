@@ -1,0 +1,13 @@
+# Ignore virtualenv
+venv/
+
+# Ignore Python artifacts
+__pycache__/
+*.pyc
+
+# Ignore local configs
+*.env
+secrets.json
+
+# DO NOT IGNORE STATICFILES
+# staticfiles/

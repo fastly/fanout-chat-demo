@@ -32,7 +32,9 @@ Please set the environment variable DJANGO_SECRET_KEY and restart.")
 #     We should warn the user if they're present, just as a reminder.
 DEBUG = True
 ALLOWED_HOSTS = [
-  '.glitch.me',
+  '127.0.0.1',
+  'localhost',
+  '.appspot.com',
   '.fastly.com',
   '.edgecompute.app',
 ]
@@ -102,7 +104,15 @@ WSGI_APPLICATION = 'server.wsgi.application'
 DATABASES = {}
 
 import dj_database_url
-DATABASES['default'] = dj_database_url.config(default='sqlite:///db.sqlite3')
+# DATABASES['default'] = dj_database_url.config(default='sqlite:///db.sqlite3')
+
+# Only /tmp is writable in GAE
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/tmp/db.sqlite3',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -143,7 +153,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 ASGI_APPLICATION = 'server.asgi.application'
 

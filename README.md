@@ -39,7 +39,7 @@ it locally for development.
 
 You will need:
 
-* [Python](https://python.org/) - 3.7 or newer
+* [Python](https://python.org/) - 3.7 - 3.12 (but not 3.13 or newer)
 * [Pushpin](https://pushpin.org/) - This open source GRIP proxy implementation can take the place of Fanout during
   development.
 
@@ -58,7 +58,7 @@ Preparation:
 
     ```sh
     cd origin
-    virtualenv --python=python3 venv
+    python3 -m venv venv
     . venv/bin/activate
     pip install -r requirements.txt
     touch .env

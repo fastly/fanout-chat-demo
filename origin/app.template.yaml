@@ -1,0 +1,22 @@
+runtime: python312
+entrypoint: >
+  bash -c "python manage.py migrate && gunicorn server.wsgi --bind :$PORT"
+
+service: fanout-chat-demo-origin
+
+handlers:
+  - url: /static
+    static_dir: staticfiles
+
+  - url: /.*
+    script: auto
+
+env_variables:
+  DJANGO_SECRET_KEY: "__DJANGO_SECRET_KEY__"
+  GRIP_URL: "__GRIP_URL__"
+  GRIP_VERIFY_KEY: "__GRIP_VERIFY_KEY__"
+  CSP: "__CSP__"
+
+automatic_scaling:
+  min_instances: 1
+  max_instances: 1

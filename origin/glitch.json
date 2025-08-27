@@ -1,4 +1,0 @@
-{
-  "install": "pip3 install --user -r requirements.txt",
-  "start": "python3 manage.py migrate && python3 manage.py runserver 3000"
-}

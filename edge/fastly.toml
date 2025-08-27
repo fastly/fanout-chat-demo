@@ -7,5 +7,12 @@ language = "javascript"
 manifest_version = 3
 name = "chat-demo-edge"
 
+[local_server.pushpin]
+enable = true
+
+[local_server.backends.origin]
+url = "http://127.0.0.1:3000/"
+override_host = "127.0.0.1:3000"
+
 [scripts]
-  build = "npm run build"
+build = "npm run build"

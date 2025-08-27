@@ -32,7 +32,7 @@ Please set the environment variable DJANGO_SECRET_KEY and restart.")
 #     We should warn the user if they're present, just as a reminder.
 DEBUG = True
 ALLOWED_HOSTS = [
-  '.glitch.me',
+  '127.0.0.1',
   '.fastly.com',
   '.edgecompute.app',
 ]

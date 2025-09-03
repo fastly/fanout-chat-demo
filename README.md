@@ -1,69 +1,63 @@
 # Chat Demo for Fastly Fanout
 
-This application demonstrates the use of [Fastly Fanout](https://docs.fastly.com/products/fanout)
-in a simple web chat app that uses EventStream.
+This application demonstrates the use of [Fastly Fanout](https://docs.fastly.com/products/fanout) in a simple web chat app that uses EventStream.
 
 A live instance of this demo can be found at [fanout-chat-demo.edgecompute.app](https://fanout-chat-demo.edgecompute.app/).
 
-## Components
+## Overview
 
-To enable realtime updates, [Fastly Fanout](https://docs.fastly.com/products/fanout) is positioned as a
-[GRIP (Generic Realtime Intermediary Protocol)](https://pushpin.org/docs/protocols/grip/) proxy. Responses for streaming
-requests are held open by Fanout. Then, as updates become ready, the backend application publishes these updates through
-Fanout to all connected clients. For details on this mechanism, see [Real-time Updates](#real-time-updates) below.
+To enable realtime updates, [Fastly Fanout](https://docs.fastly.com/products/fanout) is positioned as a [GRIP (Generic Realtime Intermediary Protocol)](https://pushpin.org/docs/protocols/grip/) proxy. Responses for streaming requests are held open by Fanout. Then, as updates become ready, the backend application publishes these updates through Fanout to all connected clients. For details on this mechanism, see [Real-time Updates](#real-time-updates) below.
 
 The project comprises two main parts:
 
-* A web application. The backend for this web application is written in Python. It uses the
-  [Django framework](https://www.djangoproject.com) and uses [SQLite](https://www.sqlite.org/) to maintain a
-  small database. The frontend for this web application is a standard HTML application that uses
-  [jQuery](https://jquery.com/). The files that compose the frontend are served by the backend as static files.
+* A web application. The backend for this web application is written in Python. It uses the [Django framework](https://www.djangoproject.com) and uses [SQLite](https://www.sqlite.org/) to maintain a small database. The frontend for this web application is a standard HTML application that uses [jQuery](https://jquery.com/). The files that compose the frontend are served by the backend as static files.
 
-* An edge application. A [Fastly Compute](https://www.fastly.com/products/edge-compute)
-  application that passes traffic through to the web application, and activates the
-  [Fanout feature](https://docs.fastly.com/products/fanout) for relevant requests.
+* An edge application. A [Fastly Compute](https://www.fastly.com/products/edge-compute) application that passes traffic through to the web application, and activates the [Fanout feature](https://docs.fastly.com/products/fanout) for relevant requests.
 
-The live instance's backend runs on [Glitch](https://glitch.com/), and the project can be viewed here:
-[https://glitch.com/~fanout-chat-demo](https://glitch.com/~fanout-chat-demo).
+The live instance's backend runs on an instance of Google App Engine.
 
-The live instance's edge application is at [fanout-chat-demo.edgecompute.app](https://fanout-chat-demo.edgecompute.app/).
-It is configured with the above Glitch application as the backend, and the service has the
-[Fanout feature enabled](https://developer.fastly.com/learning/concepts/real-time-messaging/fanout/#enable-fanout).
+The live instance's edge application is at [fanout-chat-demo.edgecompute.app](https://fanout-chat-demo.edgecompute.app/). It is configured with the above backend application as the backend, and the service has the [Fanout feature enabled](https://developer.fastly.com/learning/concepts/real-time-messaging/fanout/#enable-fanout).
 
 ## Usage
 
 ### Development
 
-Though the project is designed with Glitch and Fastly in mind, it's possible to run
-it locally for development.
+This application can be run locally without needing to create a Fastly account or enable the Fanout feature.
 
-You will need:
+To run this application locally, you will need to run both the backend application (on Python) and the edge application (in Fastly's local development server).
 
-* [Python](https://python.org/) - 3.7 or newer
-* [Pushpin](https://pushpin.org/) - This open source GRIP proxy implementation can take the place of Fanout during
-  development.
+You will need the following on your development environment:
 
-Preparation:
+* [Python](https://python.org/) 3.7 or newer
+* [Node.js](https://nodejs.dev/) 20.x or newer
+* [Fastly CLI](https://www.fastly.com/documentation/reference/tools/cli/) version 11.5.0 or newer
+* [Viceroy](https://github.com/fastly/Viceroy) version 0.14.0 or newer (usually managed by Fastly CLI)
+* [a local installation](https://pushpin.org/docs/install/) of Pushpin
 
-1. [Install Pushpin](https://pushpin.org/docs/install/).
+#### Run the backend application
 
-2. Configure Pushpin using `localhost:3000` by modifying the `routes` file.
-   For example, on a default macOS installation, set the contents of `/opt/homebrew/etc/pushpin/routes`:
+1. Clone this repository to a new directory on your development environment.
 
-    ```
-    * localhost:3000
-    ```
+2. Set up virtualenv and install Python dependencies for this project.
 
-3. Setup virtualenv, install Python dependencies, create empty environment config, and set up the database.
+   ```
+   cd origin
+   virtualenv --python=python3 venv
+   . venv/bin/activate
+   pip install -r requirements.txt
+   ```
 
-    ```sh
-    cd origin
-    virtualenv --python=python3 venv
-    . venv/bin/activate
-    pip install -r requirements.txt
-    touch .env
-    python manage.py migrate
-    ```
+3. Create the environment config file.
+
+   ```
+   cp .env.template .env
+   ```
+   
+4. Set up the database.
+
+   ```
+   python manage.py migrate
+   ```
 
 To start the application:
 
@@ -71,106 +65,110 @@ To start the application:
 python manage.py runserver 3000
 ```
 
-Now, browse to your application at http://localhost:7999/.
+The backend application will run at http://localhost:3000/.
+
+#### Run the edge application
+
+The files live in the `edge/` directory of this repo.
+
+1. Switch to the `edge` directory and install JavaScript dependencies.
+
+   ```
+   cd edge
+   npm install
+   ```
+
+2. Start the application:
+
+   ```
+   npm run dev
+   ```
+
+Now, browse to your application at http://localhost:7676/.
 
 ### Production
 
 To run in production, you will need a [Fastly Compute service with Fanout enabled](https://developer.fastly.com/learning/concepts/real-time-messaging/fanout/#enable-fanout).
 
-You will also need to run the server application on an origin server that is visible from the internet.
+You will also need to run the backend application on an origin server that is visible from the internet.
 
-#### Running on Glitch
+#### Deploy the backend application
 
-This application is written with Glitch in mind.
-
-> NOTE: If you are using Glitch, consider [boosting your app](https://glitch.happyfox.com/kb/article/73-glitch-pro/) so
-> that it doesn't go to sleep.
-
-1. Create a new project on [Glitch](https://glitch.com/) and import this GitHub repository. Note the public URL of your project, which
-   typically has the domain name `https://<project-name>.glitch.me`.
-
-2. Set up the environment. In the Glitch interface, modify `.env` and set the following values:
-    * `GRIP_URL`: `https://api.fastly.com/service/<service-id>?verify-iss=fastly:<service-id>&key=<api-token>`
-
-        Replace `<service-id>` with your Fastly service ID, and `<api-token>`
-        with an API token for your service that has `global` scope.
-
-    * `GRIP_VERIFY_KEY`: `base64:LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFQ0tvNUExZWJ5RmNubVZWOFNFNU9uKzhHODFKeQpCalN2Y3J4NFZMZXRXQ2p1REFtcHBUbzN4TS96ejc2M0NPVENnSGZwLzZsUGRDeVlqanFjK0dNN3N3PT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0t`(\*)
-
-        (*) This is a base64-encoded version of the public key published at [Validating GRIP requests](https://developer.fastly.com/learning/concepts/real-time-messaging/fanout/#validating-grip-requests) on the Fastly Developer Hub.
-
-    * `DJANGO_SECRET_KEY`: Django uses a secret key to provide cryptographic signing. Set a unique, unpredictable value.
-
-        See [SECRET_KEY](https://docs.djangoproject.com/en/4.2/ref/settings/#secret-key) in the Django documentation for
-        more details. 
-
-3. Glitch will find the `glitch.json` file and automatically install the dependencies and start your application.
-
-4. Set up the [edge application](edge) on your Fastly account, and set your Glitch application as a backend for it
-   using the name `origin`. See the edge application's [README.md](edge/README.md) file for details.
-
-5. Browse to your application at the public URL of your Edge application.
-
-#### Running on your own Python server
-
-This application is written with Glitch in mind, but you can alternatively use any Python server that is visible from
-the internet.
+Use a Python server that is visible from the internet.
 
 1. Clone this repository to a new directory on your Python server.
 
-2. Switch to the directory, install dependencies, create the environment file, and set up the database:
+2. Set up virtualenv and install Python dependencies for this project.
 
-    ```
-    pip3 install -r requirements.txt
-    touch .env
-    python3 manage.py migrate
-    ```
+   ```
+   cd origin
+   virtualenv --python=python3 venv
+   . venv/bin/activate
+   pip install -r requirements.txt
+   ```
 
-3. Set the following environment variables. Modify `.env` and set the following values:
+3. Copy `.env.template` to `.env`, and modify it to set the following environment variables:
     * `GRIP_URL`: `https://api.fastly.com/service/<service-id>?verify-iss=fastly:<service-id>&key=<api-token>`
 
         Replace `<service-id>` with your Fastly service ID, and `<api-token>`
-        with an API token for your service that has `global` scope.
+        with an API token for your service that has `global` scope.(\*)
+
+        (*) It's likely that your Fastly service ID is not determined yet, as you have not yet deployed the edge application. If this is the case, leave this blank for now and set it up after you have deployed your edge application.
 
     * `GRIP_VERIFY_KEY`: `base64:LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFQ0tvNUExZWJ5RmNubVZWOFNFNU9uKzhHODFKeQpCalN2Y3J4NFZMZXRXQ2p1REFtcHBUbzN4TS96ejc2M0NPVENnSGZwLzZsUGRDeVlqanFjK0dNN3N3PT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0t`(\*)
 
         (*) This is a base64-encoded version of the public key published at [Validating GRIP requests](https://developer.fastly.com/learning/concepts/real-time-messaging/fanout/#validating-grip-requests) on the Fastly Developer Hub.
 
-    * `DJANGO_SECRET_KEY`: Django uses a secret key to provide cryptographic signing. Set a unique, unpredictable value.
+4. Set up the database.
 
-        See [SECRET_KEY](https://docs.djangoproject.com/en/4.2/ref/settings/#secret-key) in the Django documentation for
-        more details.
+   ```
+   python manage.py migrate
+   ```
 
-4. Start your application:
+Then, start the application.
 
-    ```
-    python manage.py runserver
-    ```
+```
+python manage.py runserver 80
+```
 
-5. Set up the [edge application](edge) on your Fastly account, and set your Python application as a backend for it using
-   the name `origin`. See the edge application's [README.md](edge/README.md) file for details.
+The `80` denotes the port to run the backend server. Set this to an appropriate number to run the backend server.
 
-6. Browse to your application at the public URL of your Edge application.
+#### Deploy the edge application
 
-#### Production on your own Pushpin instance (advanced)
+The files live in the `edge/` directory of this repo.
 
-It's also possible to run in production using your own instance of Pushpin. The details are beyond the scope of this
-document, but here are some pointers:
+1. Switch to the `edge` directory and install JavaScript dependencies.
 
-* Configure Pushpin to proxy to your instance of the server application
-* Then set your `GRIP_URL` to point to your Pushpin instance
+   ```
+   cd edge
+   npm install
+   ```
 
-For more details, see [Pushpin Configuration](https://pushpin.org/docs/configuration/).
+2. Deploy the application:
+
+   ```
+   npm run deploy
+   ```
+
+3. The first time you deploy this application, the Fastly CLI will prompt you for a service ID or offer to create a new one. Follow the on-screen prompts to set up the service. You will also be prompted to set up backends. Use the name `origin` and set it up to point to the public domain name of your backend application.
+
+4. You also need to [enable Fanout](https://developer.fastly.com/learning/concepts/real-time-messaging/fanout/#enable-fanout) on your service.
+
+   ```term
+   $ fastly products --enable=fanout
+   ```
+
+5. Now that your service ID has been determined, return to your backend and update the GRIP_URL environment variable with the service ID. Restart the backend application. 
+
+6. Browse to the public domain name of your Compute service.
 
 ### Configuration
 
-This program can be configured using two environment variables:
+This program can be configured using these environment variables set in the `.env` file:
 
-* `GRIP_URL` - a URL used to publish messages through a GRIP proxy. The default value
-  is `http://127.0.0.1:5561/`, a value that can be used in development to publish to Pushpin.
-* `GRIP_VERIFY_KEY` - (optional) a string that can be used to configure the `verify-key` component
-  of `GRIP_URL`. See [Configuration of js-serve-grip](https://github.com/fanout/js-serve-grip#configuration)
-  for details.
+* `DJANGO_SECRET_KEY` - a developer-provided random string used by the Django framework during cryptographic operations
+* `GRIP_URL` - a URL used to publish messages through a GRIP proxy. The default value is `http://127.0.0.1:5561/`, a value that can be used in development to publish to Pushpin.
+* `GRIP_VERIFY_KEY` - (optional) a string that can be used to configure the `verify-key` component of `GRIP_URL`. See [Configuration of js-serve-grip](https://github.com/fanout/js-serve-grip#configuration) for details.
 
 ## API
 
@@ -216,13 +214,11 @@ Returns: SSE stream
 
 ### Real-time Updates
 
-The `/rooms/{room-id}/events/` endpoint uses [django-eventstream](https://pypi.org/project/django-eventstream/) to
-use GRIP to serve updated data to clients.
+The `/rooms/{room-id}/events/` endpoint uses [django-eventstream](https://pypi.org/project/django-eventstream/) to use GRIP to serve updated data to clients.
 
 ## Issues
 
-If you encounter any non-security-related bug or unexpected behavior, please [file an issue][bug]
-using the bug report template.
+If you encounter any non-security-related bug or unexpected behavior, please [file an issue][bug] using the bug report template.
 
 [bug]: https://github.com/fastly/fanout-chat-demo/issues/new?labels=bug
 

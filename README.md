@@ -30,7 +30,7 @@ You will need the following on your development environment:
 
 * [Python](https://python.org/) 3.7 or newer
 * [Node.js](https://nodejs.dev/) 20.x or newer
-* [Fastly CLI](https://www.fastly.com/documentation/reference/tools/cli/) version 11.5.0 or newer
+* [Fastly CLI](https://www.fastly.com/documentation/reference/tools/cli/) version 12.0.0 or newer
 * [Viceroy](https://github.com/fastly/Viceroy) version 0.14.0 or newer (usually managed by Fastly CLI)
 * [a local installation](https://pushpin.org/docs/install/) of Pushpin
 
